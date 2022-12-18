@@ -76,6 +76,7 @@ func newAccessController(options map[string]interface{}) (auth.AccessController,
 
 		tokenCache:      make(map[[32]byte]*CachedToken),
 		tokenCacheMutex: new(sync.RWMutex),
+		janitorOnce:     new(sync.Once),
 
 		httpClient: &http.Client{
 			Transport: &Transport{
