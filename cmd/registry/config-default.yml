@@ -11,8 +11,9 @@ http:
   addr: :5000
   headers:
     X-Content-Type-Options: [nosniff]
-    debug:
-      addr: 127.0.0.1:5001
+  debug:
+    addr: 127.0.0.1:5001
+  draintimeout: 30s
 health:
   storagedriver:
     enabled: true
