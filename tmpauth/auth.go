@@ -2,6 +2,7 @@ package tmpauth
 
 import (
 	"crypto/sha256"
+	"crypto/subtle"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -14,11 +15,16 @@ import (
 )
 
 const TmpAuthHost = "auth.tmpim.pw"
+const offlineUser = "offline"
 
 func (ac *accessController) authenticateUser(username, password string) error {
 	ac.janitorOnce.Do(func() {
 		go ac.janitor()
 	})
+
+	if username == offlineUser && subtle.ConstantTimeCompare([]byte(password), []byte(ac.offlineKey)) == 1 {
+		return nil
+	}
 
 	token, err := ac.parseWrappedAuthJWT(password)
 	if err != nil {

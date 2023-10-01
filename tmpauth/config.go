@@ -35,6 +35,11 @@ func newAccessController(options map[string]interface{}) (auth.AccessController,
 		return nil, fmt.Errorf(`"publickey" must be set for tmpauth access controller`)
 	}
 
+	offlineKey, ok := options["offlinekey"].(string)
+	if !ok {
+		return nil, fmt.Errorf(`"offlinekey" must be set for tmpauth access controller`)
+	}
+
 	pubKeyData, err := base64.StdEncoding.DecodeString(publicKey)
 	if err != nil {
 		return nil, fmt.Errorf("tmpauth: invalid public_key: %w", err)
@@ -69,10 +74,11 @@ func newAccessController(options map[string]interface{}) (auth.AccessController,
 	}
 
 	return &accessController{
-		realm:     realm,
-		clientID:  claims.Subject,
-		secret:    []byte(claims.Secret),
-		publicKey: pubKey,
+		realm:      realm,
+		clientID:   claims.Subject,
+		secret:     []byte(claims.Secret),
+		offlineKey: offlineKey,
+		publicKey:  pubKey,
 
 		tokenCache:      make(map[[32]byte]*CachedToken),
 		tokenCacheMutex: new(sync.RWMutex),

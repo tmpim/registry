@@ -16,6 +16,7 @@ type accessController struct {
 	realm           string
 	clientID        string
 	secret          []byte
+	offlineKey      string
 	publicKey       *ecdsa.PublicKey
 	tokenCache      map[[32]byte]*CachedToken
 	tokenCacheMutex *sync.RWMutex
